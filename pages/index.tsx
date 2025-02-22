@@ -1,9 +1,11 @@
-import React from 'react';
 
-const Home: React.FC = () => {
+// Components
+import Home from "./home";
+
+const Login= () => {
   return (
     <div className="flex items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold">Welcome to My Next.js App!</h1>
+      <Home />
     </div>
   );
 };
