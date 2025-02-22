@@ -1,14 +1,23 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
+import { useState } from "react";
+import { supabase } from "../supabase/client";
 
-import Link from "next/link"
+import Link from "next/link";
 
 export default function CreatePlayer() {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Aquí iría la lógica de creación del usuario con Supabase
-  }
+    e.preventDefault();
+    const { data, error } = await supabase
+      .from("players")
+      .insert([{ email, name }]);
+    if (error) console.error(error);
+    else console.log("Player created:", data);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -35,25 +44,35 @@ export default function CreatePlayer() {
           <h2 className="text-2xl font-bold mb-6">Crear Jugador</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="nickname"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Nickname
               </label>
               <input
                 id="nickname"
                 type="text"
                 placeholder="Tu nickname"
+                value={name}
                 required
+                onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <input
                 id="email"
                 type="email"
                 placeholder="tu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
               />
@@ -68,6 +87,5 @@ export default function CreatePlayer() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
