@@ -2,16 +2,30 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from 'next/router';
 import { supabase } from "../supabase/client";
 import Alert from "../components/alert";
 
 export default function CreateGame() {
+  const router = useRouter();
   const [players, setPlayers] = useState(3);
-  const [rounds, setRounds] = useState(1);
+  const [rounds, setRounds] = useState(4);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedPlayers, setSelectedPlayers] = useState<any[]>([]);
   const [showAlert, setShowAlert] = useState(false);
+  const [matchedPlayers, setMatchedPlayers] = useState(false);
+
+  useEffect(() => {
+    const maxPossibleRounds = Math.floor(50 / players);
+    const maxRounds = Math.min(9, maxPossibleRounds); // No más de 9 rondas
+    if (rounds > maxRounds) {
+      setRounds(maxRounds);
+    } else if (rounds < 4) {
+      // No menos de 4 rondas
+      setRounds(4);
+    }
+  }, [players, rounds]);
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -41,16 +55,37 @@ export default function CreateGame() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (selectedPlayers.length !== players) {
+      setMatchedPlayers(true);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("games")
-      .insert([{ created_by: selectedPlayers[0].id }]); // Reemplaza con el ID del jugador que crea la partida
+      .insert([{ 
+        created_by: selectedPlayers[0].id,
+        players: selectedPlayers.map(player => ({
+          id: player.id,
+          name: player.name
+        })),
+        total_rounds: rounds,
+        current_round: 1,
+        status: 'active'
+      }])
+      .select()
+
     if (error) {
       console.error(error);
     } else {
       console.log("Game created:", data);
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 3000);
+      router.push(`/game?id=${data[0].id}`);
     }
+  };
+
+  const handleAlertClose = () => {
+    setMatchedPlayers(false);
+    setShowAlert(false);
   };
 
   return (
@@ -73,7 +108,13 @@ export default function CreateGame() {
             Atrás
           </button>
         </Link>
-        {showAlert && <Alert variant="success" text="Partida creada exitosamente!" />}
+        {matchedPlayers && (
+          <Alert
+            onClose={handleAlertClose}
+            variant="warning"
+            text="La cantidad de jugadores seleccionados es incompleta."
+          />
+        )}
 
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6">Configuración de Partida</h2>
@@ -84,7 +125,7 @@ export default function CreateGame() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-blue-500 text-white hover:bg-blue-600"
+                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
                     onClick={() => setPlayers(Math.max(3, players - 1))}
                   >
                     <svg
@@ -103,7 +144,7 @@ export default function CreateGame() {
                   <span className="w-12 text-center">{players}</span>
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-blue-500 text-white hover:bg-blue-600"
+                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
                     onClick={() => setPlayers(Math.min(8, players + 1))}
                   >
                     <svg
@@ -128,8 +169,8 @@ export default function CreateGame() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-blue-500 text-white hover:bg-blue-600"
-                    onClick={() => setRounds(Math.max(1, rounds - 1))}
+                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
+                    onClick={() => setRounds(Math.max(4, rounds - 1))}
                   >
                     <svg
                       className="w-4 h-4"
@@ -147,8 +188,15 @@ export default function CreateGame() {
                   <span className="w-12 text-center">{rounds}</span>
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-blue-500 text-white hover:bg-blue-600"
-                    onClick={() => setRounds(rounds + 1)}
+                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
+                    onClick={() =>
+                      setRounds(
+                        Math.min(
+                          9,
+                          Math.min(Math.floor(50 / players), rounds + 1)
+                        )
+                      )
+                    }
                   >
                     <svg
                       className="w-4 h-4"
@@ -167,8 +215,7 @@ export default function CreateGame() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium mb-2">Buscar Jugadores</label>
+              <div className="">
                 <input
                   type="text"
                   placeholder="Buscar jugador..."
@@ -189,7 +236,7 @@ export default function CreateGame() {
                 </div>
               </div>
 
-              <div className="border rounded-lg p-4 mt-4">
+              <div className="border rounded-lg p-4">
                 <div className="text-sm font-medium mb-2">
                   Jugadores Seleccionados
                 </div>
@@ -207,7 +254,7 @@ export default function CreateGame() {
               <button
                 type="submit"
                 onClick={() => setShowAlert(true)}
-                className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                className="w-full bg-sky-400 text-white py-2 rounded-md hover:bg-blue-600"
               >
                 Crear Partida
               </button>

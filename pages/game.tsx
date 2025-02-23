@@ -3,6 +3,10 @@
 import React from "react"
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
+import { useRouter } from 'next/router'
+
+import { supabase } from "../supabase/client"
+
 
 interface Player {
   id: string
@@ -20,14 +24,12 @@ interface GameState {
 }
 
 export default function GameScore() {
-  const [gameState, setGameState] = useState<GameState>({
-    players: [
-      { id: "1", name: "Jugador 1" },
-      { id: "2", name: "Jugador 2" },
-      { id: "3", name: "Jugador 3" },
-    ],
-    rounds: Array(5).fill(Array(3).fill({ bet: "", result: "" })),
-  })
+    const router = useRouter()
+    const { id } = router.query
+    const [gameState, setGameState] = useState<GameState>({
+      players: [],
+      rounds: []
+    })
 
   const [totals, setTotals] = useState<number[]>([])
 
@@ -44,6 +46,32 @@ export default function GameScore() {
   useEffect(() => {
     calculateTotals()
   }, [calculateTotals])
+
+  useEffect(() => {
+    const fetchGameData = async () => {
+      if (!id) return;
+
+      const { data: game, error } = await supabase
+        .from("games")
+        .select("*")
+        .eq("id", id)
+        .single()
+
+      if (error) {
+        console.error("Error fetching game:", error)
+        return
+      }
+
+      if (game) {
+        setGameState({
+          players: game.players,
+          rounds: Array(game.total_rounds).fill(Array(game.players.length).fill({ bet: "", result: "" }))
+        })
+      }
+    }
+
+    fetchGameData()
+  }, [id])
 
   const handleInputChange = (playerIndex: number, roundIndex: number, field: "bet" | "result", value: string) => {
     const newRounds = gameState.rounds.map((round, rIndex) => {
@@ -84,6 +112,11 @@ export default function GameScore() {
             Atrás
           </button>
         </Link>
+        <div className='flex items-center '>
+        <button className="flex items-center px-3 py-1 mx-4 border border-violet-500 text-white rounded-md bg-violet-500 hover:bg-violet-600 transition-colors">
+         
+          Terminar Partida
+        </button>
         <button className="flex items-center px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50">
           <svg
             className="w-4 h-4 mr-2"
@@ -99,6 +132,7 @@ export default function GameScore() {
           </svg>
           Editar
         </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
