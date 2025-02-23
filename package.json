@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@material-tailwind/react": "^2.1.10",
     "@supabase/supabase-js": "latest",
     "@tailwindcss/postcss": "^4.0.8",
     "@tailwindcss/postcss7-compat": "^2.2.17",
