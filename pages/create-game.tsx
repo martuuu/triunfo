@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { supabase } from "../supabase/client";
 import Alert from "../components/alert";
 
@@ -63,22 +63,24 @@ export default function CreateGame() {
 
     const { data, error } = await supabase
       .from("games")
-      .insert([{ 
-        created_by: selectedPlayers[0].id,
-        players: selectedPlayers.map(player => ({
-          id: player.id,
-          name: player.name
-        })),
-        total_rounds: rounds,
-        current_round: 1,
-        status: 'active'
-      }])
-      .select()
+      .insert([
+        {
+          created_by: selectedPlayers[0].id,
+          players: selectedPlayers.map((player) => ({
+            id: player.id,
+            name: player.name,
+          })),
+          total_rounds: rounds,
+          current_round: 1,
+          status: "active",
+        },
+      ])
+      .select();
 
     if (error) {
       console.error(error);
     } else {
-      router.push(`/game/${data[0].id}`) // Nueva ruta usando el App Router
+      router.push(`/game/${data[0].id}`); // Nueva ruta usando el App Router
     }
   };
 
@@ -124,7 +126,7 @@ export default function CreateGame() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
+                    className="border bg-gradient-to-r from-indigo-400 to-violet-500 rounded p-2 text-white hover:bg-violet-600 transition-colors"
                     onClick={() => setPlayers(Math.max(3, players - 1))}
                   >
                     <svg
@@ -143,7 +145,7 @@ export default function CreateGame() {
                   <span className="w-12 text-center">{players}</span>
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
+                    className="border bg-gradient-to-r from-indigo-400 to-violet-500 rounded p-2 text-white hover:bg-violet-600 transition-colors"
                     onClick={() => setPlayers(Math.min(8, players + 1))}
                   >
                     <svg
@@ -168,7 +170,7 @@ export default function CreateGame() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
+                    className="border bg-gradient-to-r from-indigo-400 to-violet-500 rounded p-2 text-white hover:bg-violet-600 transition-colors"
                     onClick={() => setRounds(Math.max(4, rounds - 1))}
                   >
                     <svg
@@ -187,7 +189,7 @@ export default function CreateGame() {
                   <span className="w-12 text-center">{rounds}</span>
                   <button
                     type="button"
-                    className="border border-gray-300 rounded p-2 bg-sky-400 text-white hover:bg-blue-600"
+                    className="border bg-gradient-to-r from-indigo-400 to-violet-500 rounded p-2 text-white hover:bg-violet-600 transition-colors"
                     onClick={() =>
                       setRounds(
                         Math.min(
@@ -220,13 +222,13 @@ export default function CreateGame() {
                   placeholder="Buscar jugador..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 text-sm text-gray-400 font-medium mb-2"
                 />
-                <div className="space-y-1">
+                <div className="space-y-1 ">
                   {searchResults.map((player) => (
                     <div
                       key={player.id}
-                      className="cursor-pointer p-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                      className="cursor-pointer p-2 text-gray-500 font-medium mb-2 border border-gray-200 rounded-md hover:bg-gray-100"
                       onClick={() => handlePlayerSelect(player)}
                     >
                       {player.name}
@@ -235,25 +237,30 @@ export default function CreateGame() {
                 </div>
               </div>
 
-              <div className="border rounded-lg p-4">
-                <div className="text-sm font-medium mb-2">
-                  Jugadores Seleccionados
-                </div>
+              <div className="border border-violet-200 rounded-md p-4">
+                {!selectedPlayers && (
+                  <div className="text-sm text-gray-400 font-medium mb-2">
+                    Jugadores Seleccionados
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-2">
                   {selectedPlayers.map((player) => (
-                    <span
+                    <div
                       key={player.id}
-                      className="bg-gray-200 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded"
+                      className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100"
                     >
-                      {player.name}
-                    </span>
+                      <span className="mr-2">{player.emoji || "💩"}</span>
+                      <span className="text-gray-700">
+                        {player.name?.toLowerCase() || player.email}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>
               <button
                 type="submit"
                 onClick={() => setShowAlert(true)}
-                className="w-full bg-sky-400 text-white py-2 rounded-md hover:bg-blue-600"
+                className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"
               >
                 Crear Partida
               </button>
