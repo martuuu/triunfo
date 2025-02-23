@@ -78,8 +78,7 @@ export default function CreateGame() {
     if (error) {
       console.error(error);
     } else {
-      console.log("Game created:", data);
-      router.push(`/game?id=${data[0].id}`);
+      router.push(`/game/${data[0].id}`) // Nueva ruta usando el App Router
     }
   };
 

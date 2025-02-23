@@ -9,6 +9,7 @@ import Link from "next/link";
 export default function CreatePlayer() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [emoji, setEmoji] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +58,21 @@ export default function CreatePlayer() {
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+              />
+                  <label
+                htmlFor="nickname"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Emoji
+              </label>
+              <input
+                id="emoji"
+                type="text"
+                placeholder="Emoji"
+                value={emoji}
+                required
+                onChange={(e) => setEmoji(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
               />
             </div>
