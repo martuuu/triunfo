@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { supabase } from "../supabase/client";
-import Alert from "../components/Alert";
+// import Alert from "@/components/Alert";
 import BackButton from "@/components/BackButton";
 
 export default function CreateGame() {
@@ -99,13 +99,13 @@ export default function CreateGame() {
   return (
     <div className="container mx-auto p-4">
       <div className="">
-        {matchedPlayers && (
+        {/* {matchedPlayers && (
           <Alert
             onClose={handleAlertClose}
             variant="warning"
             text="La cantidad de jugadores seleccionados es incompleta."
           />
-        )}
+        )} */}
         <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
           <div className="flex justify-start items-center mb-6">
             <BackButton />
