@@ -1,10 +1,11 @@
 "use client";
-import React from "react"
+import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/supabase/client";
 
 import Link from "next/link";
+import BackButton from "@/components/BackButton";
 
 interface Player {
   id: string;
@@ -23,7 +24,7 @@ interface GameState {
 
 export default function GamePage() {
   const params = useParams();
-  const id = params.id;
+  const id = params?.id as string; // Add type assertion and optional chaining
   const [gameState, setGameState] = useState<GameState>({
     players: [],
     rounds: [],
@@ -43,7 +44,10 @@ export default function GamePage() {
 
   const generateRoundSequence = (totalRounds: number) => {
     const ascending = Array.from({ length: totalRounds }, (_, i) => i + 1);
-    const descending = Array.from({ length: totalRounds - 1 }, (_, i) => totalRounds - 1 - i);
+    const descending = Array.from(
+      { length: totalRounds - 1 },
+      (_, i) => totalRounds - 1 - i
+    );
     return [...ascending, ...descending];
   };
 
@@ -53,7 +57,10 @@ export default function GamePage() {
 
   useEffect(() => {
     const fetchGameData = async () => {
-      if (!id) return;
+      if (!id) {
+        console.error("No game ID provided");
+        return;
+      }
 
       const { data: game, error } = await supabase
         .from("games")
@@ -70,7 +77,7 @@ export default function GamePage() {
         const roundSequence = generateRoundSequence(game.total_rounds);
         setGameState({
           players: game.players,
-          rounds: roundSequence.map(() => 
+          rounds: roundSequence.map(() =>
             Array(game.players.length).fill({ bet: "", result: "" })
           ),
         });
@@ -80,49 +87,26 @@ export default function GamePage() {
     fetchGameData();
   }, [id]);
 
+  const handleInputChange = (
+    playerIndex: number,
+    roundIndex: number,
+    field: "bet" | "result",
+    value: string
+  ) => {
+    const newRounds = [...gameState.rounds];
+    newRounds[roundIndex][playerIndex] = {
+      ...newRounds[roundIndex][playerIndex],
+      [field]: value,
+    };
+    setGameState((prevState) => ({
+      ...prevState,
+      rounds: newRounds,
+    }));
+  };
   return (
-    <div>
-      <div className="container mx-auto p-4">
-        <div className="flex justify-between items-center mb-4">
-          <Link href="/create-game">
-            <button className="flex items-center text-gray-600 hover:text-gray-800">
-              <svg
-                className="w-4 h-4 mr-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-              Atrás
-            </button>
-          </Link>
-          <div className="flex items-center ">
-            <button className="flex items-center px-3 py-1 mx-4 border border-violet-500 text-white rounded-md bg-violet-500 hover:bg-violet-600 transition-colors">
-              Terminar Partida
-            </button>
-            <button className="flex items-center px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50">
-              <svg
-                className="w-4 h-4 mr-2"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-              </svg>
-              Editar
-            </button>
-          </div>
-        </div>
-
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <BackButton />
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
@@ -152,7 +136,11 @@ export default function GamePage() {
               {gameState.rounds.map((round, roundIndex) => (
                 <tr key={roundIndex}>
                   <td className="border border-gray-200 p-2 text-center font-medium">
-                    {generateRoundSequence(gameState.rounds.length / 2 + 0.5)[roundIndex]}
+                    {
+                      generateRoundSequence(gameState.rounds.length / 2 + 0.5)[
+                        roundIndex
+                      ]
+                    }
                   </td>
                   {round.map((cell, playerIndex) => (
                     <React.Fragment key={`${roundIndex}-${playerIndex}`}>

@@ -6,6 +6,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { supabase } from "../supabase/client";
 
+// Components
+import BackButton from "@/components/BackButton";
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -36,58 +39,55 @@ export default function Login() {
 
   return (
     <div className="container mx-auto p-4">
-      <Link href="/">
-        <button className="mb-4 flex items-center text-gray-600 hover:text-gray-800">
-          {/* ... SVG back button ... */}
-          Atrás
-        </button>
-      </Link>
-
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tucorreo@ejemplo.com"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-            </div>
-            <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Contraseña
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-            </div>
-            {error && <div className="text-red-500 text-sm">{error}</div>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"            >
-              {loading ? "Cargando..." : "Ingresar"}
-            </button>
-          </form>
+      <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
+        <div className="flex justify-start items-center mb-6">
+          <BackButton />
+          <h2 className="text-xl mx-4">Iniciar sesión</h2>
         </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="tucorreo@ejemplo.com"
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+            />
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Contraseña
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+            />
+          </div>
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"
+          >
+            {loading ? "Cargando..." : "Ingresar"}
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -4,13 +4,32 @@ import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { supabase } from "../supabase/client"
 
+interface Player {
+  id: string
+  name: string
+  emoji: string
+}
+
+interface Round {
+  bet: string
+  result: string
+}
+
+interface GameState {
+  players: Player[]
+  rounds: Round[][]
+}
+
 interface GameScoreProps {
   gameId: string
 }
 
 export default function GameScore({ gameId }: GameScoreProps) {
-  // ... resto del código actual de game.tsx ...
-  
+  const [gameState, setGameState] = useState<GameState>({
+    players: [],
+    rounds: []
+  })
+
   useEffect(() => {
     const fetchGameData = async () => {
       if (!gameId) return;

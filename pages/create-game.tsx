@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { supabase } from "../supabase/client";
 import Alert from "../components/alert";
+import BackButton from "@/components/BackButton";
 
 export default function CreateGame() {
   const router = useRouter();
@@ -97,12 +98,7 @@ export default function CreateGame() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="max-w-2xl mx-auto">
-        <Link href="/">
-          <button className="flex items-center text-gray-600 hover:text-gray-800">
-            Atrás
-          </button>
-        </Link>
+      <div className="">
         {matchedPlayers && (
           <Alert
             onClose={handleAlertClose}
@@ -110,9 +106,11 @@ export default function CreateGame() {
             text="La cantidad de jugadores seleccionados es incompleta."
           />
         )}
-
-        <div className="bg-white rounded-lg shadow-lg p-4 py-16">
-          <h2 className="text-2xl font-bold mb-6">Configuración de Partida</h2>
+        <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
+          <div className="flex justify-start items-center mb-6">
+            <BackButton />
+            <h2 className="text-md mx-4">Configuración de Partida</h2>
+          </div>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex items-center justify-between">
@@ -243,7 +241,9 @@ export default function CreateGame() {
                       key={player.id}
                       className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100"
                     >
-                      <span className="mr-2 text-xl">{player.emoji || "💩"}</span>
+                      <span className="mr-2 text-xl">
+                        {player.emoji || "💩"}
+                      </span>
                       <span className="text-gray-700">
                         {player.name?.toLowerCase() || player.email}
                       </span>

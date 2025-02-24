@@ -7,6 +7,9 @@ import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+// Components
+import BackButton from "@/components/BackButton";
+
 export default function CreatePlayer() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -125,145 +128,141 @@ export default function CreatePlayer() {
   }, []);
 
   return (
-    <div className="container mx-auto p-4 py-4">
-      <Link href="/">
-        <button className="mb-4 flex items-center text-gray-600 hover:text-gray-800">
-          Atrás
-        </button>
-      </Link>
-
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg">
-        <div className="p-6 pb-16">
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
+    <div className="container mx-auto p-4">
+      <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
+        <div className="flex justify-start items-center mb-6">
+          <BackButton />
+          <h2 className="text-md mx-4">Creación de jugador</h2>
+        </div>
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex gap-4">
+            <div className="w-3/4 space-y-2">
+              <label
+                htmlFor="nickname"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nickname
+              </label>
+              <input
+                id="nickname"
+                type="text"
+                placeholder="Tu nickname"
+                value={name}
+                required
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+              />
             </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex gap-4">
-              <div className="w-3/4 space-y-2">
-                <label
-                  htmlFor="nickname"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Nickname
-                </label>
+            <div className="w-1/4 space-y-2 relative">
+              <label
+                htmlFor="emoji"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Emoji
+              </label>
+              <div className="flex items-center gap-2">
                 <input
-                  id="nickname"
+                  id="emoji-input"
                   type="text"
-                  placeholder="Tu nickname"
-                  value={name}
-                  required
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+                  placeholder="📋"
+                  value={emoji}
+                  readOnly
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowEmojiPicker(!showEmojiPicker);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400 cursor-pointer"
                 />
-              </div>
-              <div className="w-1/4 space-y-2 relative">
-                <label
-                  htmlFor="emoji"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Emoji
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    id="emoji-input"
-                    type="text"
-                    placeholder="📋"
-                    value={emoji}
-                    readOnly
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowEmojiPicker(!showEmojiPicker);
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400 cursor-pointer"
-                  />
-                  {emoji && (
-                    <button
-                      type="button"
-                      onClick={() => setEmoji("")}
-                      className="absolute right-2 text-gray-400 hover:text-gray-600"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-                {showEmojiPicker && (
-                  <div className="absolute z-100 emoji-picker right-0">
-                    <EmojiPicker
-                      onEmojiClick={onEmojiClick}
-                      autoFocusSearch={false}
-                      width={300}
-                      height={500}
-                    />
-                  </div>
+                {emoji && (
+                  <button
+                    type="button"
+                    onClick={() => setEmoji("")}
+                    className="absolute right-2 text-gray-400 hover:text-gray-600"
+                  >
+                    ×
+                  </button>
                 )}
               </div>
+              {showEmojiPicker && (
+                <div className="absolute z-100 emoji-picker right-0">
+                  <EmojiPicker
+                    onEmojiClick={onEmojiClick}
+                    autoFocusSearch={false}
+                    width={300}
+                    height={500}
+                  />
+                </div>
+              )}
             </div>
-            <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="tu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Contraseña
-              </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Mínimo 6 caracteres"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirmar Contraseña
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                placeholder="Repite tu contraseña"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-16 rounded-md hover:bg-violet-600 transition-colors disabled:opacity-50"
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
             >
-              {loading ? "Cargando..." : "Crear Jugador"}
-            </button>
-          </form>
-        </div>
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Contraseña
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Mínimo 6 caracteres"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirmar Contraseña
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Repite tu contraseña"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-16 rounded-md hover:bg-violet-600 transition-colors disabled:opacity-50"
+          >
+            {loading ? "Cargando..." : "Crear Jugador"}
+          </button>
+        </form>
       </div>
     </div>
   );
