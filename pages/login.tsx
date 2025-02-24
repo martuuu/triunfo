@@ -29,7 +29,7 @@ export default function Login() {
 
       if (error) throw error;
 
-      router.push("/home");
+      router.push("/");
     } catch (error) {
       setError((error as Error).message);
     } finally {

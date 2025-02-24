@@ -8,7 +8,14 @@ const nextConfig = {
   },
   reactStrictMode: true,
   images: {
-    domains: ['vvogaperytgmncqirgxn.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'vvogaperytgmncqirgxn.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   }
 }
 

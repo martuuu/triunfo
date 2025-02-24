@@ -115,7 +115,7 @@ export default function Home() {
               </>
             )}
           </div>
-          <div className="mt-16 text-center">
+          {/* <div className="mt-16 text-center">
             <p className="text-sm text-gray-400">developed by</p>
             <Image
               src="/images/grape.png"
@@ -123,8 +123,9 @@ export default function Home() {
               width={90}
               height={30}
               className="mx-auto"
+              priority={false}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
