@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { supabase } from "../supabase/client";
-import Alert from "../components/alert";
+import Alert from "../components/Alert";
 import BackButton from "@/components/BackButton";
 
 export default function CreateGame() {
