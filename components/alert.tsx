@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 interface AlertProps {
   text: string;
   variant: 'success' | 'error' | 'warning' | 'info';
-  onClose?: () => void; // Agregamos prop para callback
+  onClose?: () => void;
 }
 
 const variantStyles = {
@@ -13,13 +13,13 @@ const variantStyles = {
   info: 'bg-blue-400 text-white',
 };
 
-export default function Alert({ text, variant, onClose }: AlertProps) {
+const Alert = ({ text, variant, onClose }: AlertProps) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      onClose?.(); // Llamamos al callback cuando se oculta el Alert
+      onClose?.();
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -34,4 +34,6 @@ export default function Alert({ text, variant, onClose }: AlertProps) {
       </div>
     </div>
   );
-}
+};
+
+export default Alert;
