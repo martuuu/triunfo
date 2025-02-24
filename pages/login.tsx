@@ -43,9 +43,8 @@ export default function Login() {
         </button>
       </Link>
 
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Iniciar Sesión</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label
@@ -84,7 +83,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"            >
+              className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"            >
               {loading ? "Cargando..." : "Ingresar"}
             </button>
           </form>

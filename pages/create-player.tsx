@@ -3,8 +3,9 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { supabase, supabaseAdmin } from "../supabase/client";
-import EmojiPicker, { EmojiClickData, Category } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function CreatePlayer() {
   const [email, setEmail] = useState("");
@@ -14,24 +15,30 @@ export default function CreatePlayer() {
   const [emoji, setEmoji] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     // Validaciones
     if (!emoji) {
       setError("Por favor selecciona un emoji");
+      setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
+      setLoading(false);
       return;
     }
 
     if (password.length < 6) {
       setError("La contraseña debe tener al menos 6 caracteres");
+      setLoading(false);
       return;
     }
 
@@ -68,13 +75,33 @@ export default function CreatePlayer() {
 
       if (profileError) {
         console.error("Profile Error:", profileError);
-        throw new Error(`Error al crear el perfil del jugador: ${profileError.message}`);
+        throw new Error(
+          `Error al crear el perfil del jugador: ${profileError.message}`
+        );
       }
 
-      alert("Usuario creado! Por favor verifica tu email.");
+      // 3. Esperar un momento antes de intentar iniciar sesión
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // 4. Iniciar sesión automáticamente
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) throw signInError;
+
+      // 5. Redirigir al home
+      router.push("/home");
     } catch (err) {
       console.error("Error:", err);
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,28 +125,15 @@ export default function CreatePlayer() {
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 py-4">
       <Link href="/">
         <button className="mb-4 flex items-center text-gray-600 hover:text-gray-800">
-          <svg
-            className="w-4 h-4 mr-2"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
           Atrás
         </button>
       </Link>
 
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Crear Jugador</h2>
+        <div className="p-6 pb-16">
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
               {error}
@@ -243,9 +257,10 @@ export default function CreatePlayer() {
 
             <button
               type="submit"
-              className="w-full bg-sky-400 text-white py-2 px-4 rounded-md hover:bg-sky-500 transition-colors"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-16 rounded-md hover:bg-violet-600 transition-colors disabled:opacity-50"
             >
-              Crear Jugador
+              {loading ? "Cargando..." : "Crear Jugador"}
             </button>
           </form>
         </div>

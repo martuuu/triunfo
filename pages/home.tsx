@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/router";
 import { supabase } from "../supabase/client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const { user } = useAuth();
@@ -38,19 +39,18 @@ export default function Home() {
   }, [user]);
 
   return (
-    <div className="container mx-auto p-4 pt-16">
-      <div className="text-center mb-8">
+    <div className="container mx-auto p-4 py-24">
+      <div className="text-center">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-violet-500 bg-clip-text text-transparent">
           Triunfo
         </h1>
         {user && (
-          <div className="mt-4 inline-flex items-center px-3 py-1 rounded-full bg-gray-100">
-            <span className="mr-2">{user.user_metadata.emoji || "🎮"}</span>
+          <div className="mt-8 inline-flex items-center px-3 py-1 rounded-full bg-gray-100">
+            <span className="mr-2 text-xl">{user.user_metadata.emoji || "🎮"}</span>
             <span className="text-gray-700">
               {user.user_metadata.name?.toLowerCase() || user.email}
             </span>
             <div className="mx-2 h-4 w-px bg-gray-300" />{" "}
-            {/* Vertical divider */}
             <button
               onClick={handleLogout}
               className="text-gray-400 hover:text-red-500 transition-colors"
@@ -75,7 +75,7 @@ export default function Home() {
         )}
       </div>
 
-      <div className="max-w-md mx-auto bg-white rounded-xl shadow-xl p-6">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-xl p-16">
         <div className="grid gap-4">
           {!user && (
             <>
@@ -94,23 +94,38 @@ export default function Home() {
 
           {user && (
             <>
-              {!hasActiveGame ? (
-                <Link href="/create-game" className="block">
-                  <button className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors">
-                    Crear Partida
-                  </button>
-                </Link>
-              ) : (
-                <Link href="/game" className="block">
-                  <button className="w-full border border-violet-500 text-violet-500 py-2 px-4 rounded-md hover:bg-violet-50 transition-colors">
-                    Partida en Curso
-                  </button>
-                </Link>
-              )}
+              <Link href="/create-game" className="block">
+                <button className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors">
+                  Crear Partida
+                </button>
+              </Link>
+              <Link href="/game" className="block">
+                <button
+                  disabled={!hasActiveGame}
+                  className={`w-full border py-2 px-4 rounded-md transition-colors ${
+                    hasActiveGame
+                      ? "border-violet-500 text-violet-500 hover:bg-violet-50"
+                      : "border-gray-300 text-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  Partida en Curso
+                </button>
+              </Link>
             </>
           )}
         </div>
+      <div className="mt-16 text-center">
+        <p className="text-sm text-gray-400">developed by</p>
+        <Image
+          src="/images/grape.png"
+          alt="Company Logo"
+          width={90}
+          height={30}
+          className="mx-auto"
+        />
       </div>
+      </div>
+
     </div>
   );
 }

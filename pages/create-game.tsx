@@ -53,6 +53,12 @@ export default function CreateGame() {
     }
   };
 
+  const handleRemovePlayer = (playerId: string) => {
+    setSelectedPlayers(
+      selectedPlayers.filter((player) => player.id !== playerId)
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -93,19 +99,7 @@ export default function CreateGame() {
     <div className="container mx-auto p-4">
       <div className="max-w-2xl mx-auto">
         <Link href="/">
-          <button className="mb-4 flex items-center text-gray-600 hover:text-gray-800">
-            <svg
-              className="w-4 h-4 mr-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+          <button className="flex items-center text-gray-600 hover:text-gray-800">
             Atrás
           </button>
         </Link>
@@ -117,7 +111,7 @@ export default function CreateGame() {
           />
         )}
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white rounded-lg shadow-lg p-4 py-16">
           <h2 className="text-2xl font-bold mb-6">Configuración de Partida</h2>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
@@ -231,14 +225,14 @@ export default function CreateGame() {
                       className="cursor-pointer p-2 text-gray-500 font-medium mb-2 border border-gray-200 rounded-md hover:bg-gray-100"
                       onClick={() => handlePlayerSelect(player)}
                     >
-                      {player.name}
+                      {player.name.toLowerCase()}
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="border border-violet-200 rounded-md p-4">
-                {!selectedPlayers && (
+                {!selectedPlayers.length && (
                   <div className="text-sm text-gray-400 font-medium mb-2">
                     Jugadores Seleccionados
                   </div>
@@ -249,10 +243,30 @@ export default function CreateGame() {
                       key={player.id}
                       className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100"
                     >
-                      <span className="mr-2">{player.emoji || "💩"}</span>
+                      <span className="mr-2 text-xl">{player.emoji || "💩"}</span>
                       <span className="text-gray-700">
                         {player.name?.toLowerCase() || player.email}
                       </span>
+                      <div className="mx-2 h-4 w-px bg-gray-300" />
+                      <button
+                        onClick={() => handleRemovePlayer(player.id)}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                        title="Eliminar jugador"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
                     </div>
                   ))}
                 </div>
