@@ -80,13 +80,15 @@ export default function Login() {
             />
           </div>
           {error && <div className="text-red-500 text-sm">{error}</div>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"
-          >
-            {loading ? "Cargando..." : "Ingresar"}
-          </button>
+          <div className="grid gap-4 max-w-sm mx-auto">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-3 px-6 rounded-md hover:bg-violet-600 transition-colors"
+            >
+              {loading ? "Cargando..." : "Ingresar"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

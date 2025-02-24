@@ -254,14 +254,15 @@ export default function CreatePlayer() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-16 rounded-md hover:bg-violet-600 transition-colors disabled:opacity-50"
-          >
-            {loading ? "Cargando..." : "Crear Jugador"}
-          </button>
+          <div className="grid gap-4 max-w-sm mx-auto">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-3 px-6 rounded-md hover:bg-violet-600 transition-colors"
+              >
+                {loading ? "Cargando..." : "Crear Jugador"}
+              </button>
+          </div>
         </form>
       </div>
     </div>

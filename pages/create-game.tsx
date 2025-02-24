@@ -271,13 +271,16 @@ export default function CreateGame() {
                   ))}
                 </div>
               </div>
-              <button
-                type="submit"
-                onClick={() => setShowAlert(true)}
-                className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-2 px-4 rounded-md hover:bg-violet-600 transition-colors"
-              >
-                Crear Partida
-              </button>
+
+              <div className="grid gap-4 max-w-sm mx-auto">
+                  <button
+                    type="submit"
+                    onClick={() => setShowAlert(true)}
+                    className="w-full bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-3 px-6 rounded-md hover:bg-violet-600 transition-colors"
+                  >
+                    Crear Partida
+                  </button>
+              </div>
             </div>
           </form>
         </div>
