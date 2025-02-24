@@ -7,7 +7,10 @@ import { Metadata, Viewport } from "next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Triunfo",
+  title: {
+    default: 'Triunfo',
+    template: '%s | Triunfo'
+  },
   description: "Triunfo Game App",
   manifest: "/site.webmanifest",
   icons: {
