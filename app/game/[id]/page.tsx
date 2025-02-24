@@ -6,10 +6,12 @@ import { supabase } from "@/supabase/client";
 
 import Link from "next/link";
 import BackButton from "@/components/BackButton";
+import { usePlayer } from '@/hooks/usePlayer';
 
 interface Player {
   id: string;
   name: string;
+  emoji?: string;
 }
 
 interface Round {
@@ -29,7 +31,7 @@ export default function GamePage() {
     players: [],
     rounds: [],
   });
-
+  const [playersData, setPlayersData] = useState<Player[]>([]);
   const [totals, setTotals] = useState<number[]>([]);
 
   const calculateTotals = useCallback(() => {
@@ -81,6 +83,23 @@ export default function GamePage() {
             Array(game.players.length).fill({ bet: "", result: "" })
           ),
         });
+
+        const fetchedPlayers = await Promise.all(
+          game.players.map(async (playerBasic: { id: string }) => {
+            const { data: playerData } = await supabase
+              .from('players')
+              .select('*')
+              .eq('id', playerBasic.id)
+              .single();
+            
+            return {
+              ...playerData,
+              emoji: playerData?.emoji || '🎮'
+            };
+          })
+        );
+
+        setPlayersData(fetchedPlayers);
       }
     };
 
@@ -104,30 +123,36 @@ export default function GamePage() {
     }));
   };
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-        <BackButton />
+    <div className="">
+      <div className="bg-white rounded-xl shadow-lg pb-16">
+        <div className="flex justify-start items-center px-4 p-4">
+          <BackButton />
+          <h2 className="text-md mx-4">Anotador</h2>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="border border-gray-200 p-2">Ronda</th>
-                {gameState.players.map((player) => (
-                  <th
-                    key={player.id}
-                    className="border border-gray-200 p-2"
-                    colSpan={2}
-                  >
-                    {player.name}
+          <table className="w-full">
+            <thead className="">
+              <tr>
+                <th className="p-2 text-sm">Ronda</th>
+                {playersData.map((player) => (
+                  <th key={player.id} className="p-2 text-sm" colSpan={2}>
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100">
+                      <span className="mr-2 text-xl">
+                        {player.emoji || "🎮"}
+                      </span>
+                      <span className="text-gray-700">
+                        {player.name?.toLowerCase()}
+                      </span>
+                    </div>
                   </th>
                 ))}
               </tr>
               <tr className="bg-gray-50/50">
-                <th className="border border-gray-200 p-2"></th>
+                <th className="p-2 "></th>
                 {gameState.players.map((player) => (
                   <React.Fragment key={player.id}>
-                    <th className="border border-gray-200 p-2">Apuesta</th>
-                    <th className="border border-gray-200 p-2">Resultado</th>
+                    <th className="p-2 text-sm   ">Apuesta</th>
+                    <th className="p-2 text-sm">Resultado</th>
                   </React.Fragment>
                 ))}
               </tr>
@@ -135,7 +160,7 @@ export default function GamePage() {
             <tbody>
               {gameState.rounds.map((round, roundIndex) => (
                 <tr key={roundIndex}>
-                  <td className="border border-gray-200 p-2 text-center font-medium">
+                  <td className="p-2 text-center font-medium text-sm">
                     {
                       generateRoundSequence(gameState.rounds.length / 2 + 0.5)[
                         roundIndex
@@ -144,7 +169,7 @@ export default function GamePage() {
                   </td>
                   {round.map((cell, playerIndex) => (
                     <React.Fragment key={`${roundIndex}-${playerIndex}`}>
-                      <td className="border border-gray-200 p-1">
+                      <td className="p-1 text-sm">
                         <input
                           type="number"
                           value={cell.bet}
@@ -156,12 +181,12 @@ export default function GamePage() {
                               e.target.value
                             )
                           }
-                          className="h-6 w-12 text-center px-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-sky-400"
+                          className="w-full h-8 text-center border-b border-gray-300 focus:outline-none focus:border-violet-500"
                           min="0"
                           max="9"
                         />
                       </td>
-                      <td className="border border-gray-200 p-1">
+                      <td className="p-1">
                         <input
                           type="number"
                           value={cell.result}
@@ -173,7 +198,7 @@ export default function GamePage() {
                               e.target.value
                             )
                           }
-                          className="h-6 w-12 text-center px-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-sky-400"
+                          className="w-full h-8 text-center border-b border-gray-300 focus:outline-none focus:border-violet-500"
                           min="0"
                           max="9"
                         />
@@ -183,13 +208,11 @@ export default function GamePage() {
                 </tr>
               ))}
               <tr className="bg-gray-50 font-medium">
-                <td className="border border-gray-200 p-2 text-center">
-                  Total
-                </td>
+                <td className="p-2 text-center text-sm">Total</td>
                 {totals.map((total, index) => (
                   <td
                     key={index}
-                    className="border border-gray-200 p-2 text-center"
+                    className="p-2 text-center text-sm"
                     colSpan={2}
                   >
                     {total}

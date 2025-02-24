@@ -39,7 +39,7 @@ export default function Login() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
+      <div className="bg-white rounded-xl shadow-lg p-4 pb-16 md:p-8">
         <div className="flex justify-start items-center mb-6">
           <BackButton />
           <h2 className="text-xl mx-4">Iniciar sesión</h2>

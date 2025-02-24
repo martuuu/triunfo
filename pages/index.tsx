@@ -78,24 +78,24 @@ export default function Home() {
             )}
           </div>
 
-          <div className="grid gap-4 max-w-sm mx-auto">
+          <div className="grid gap-4 max-w-sm mx-auto mt-8">
             {!user && (
               <>
-                <Link href="/create-player" className="block">
-                  <button className="w-full min-h-[48px] border border-violet-500 text-violet-500 py-3 px-6 rounded-md hover:bg-violet-50 transition-colors">
-                    Crear Jugador
-                  </button>
-                </Link>
                 <Link href="/login" className="block">
                   <button className="w-full min-h-[48px] bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-3 px-6 rounded-md hover:bg-violet-600 transition-colors">
                     Iniciar Sesión
+                  </button>
+                </Link>
+                <Link href="/create-player" className="block">
+                  <button className="w-full min-h-[48px] border border-violet-500 text-violet-500 py-3 px-6 rounded-md hover:bg-violet-50 transition-colors">
+                    Crear Jugador
                   </button>
                 </Link>
               </>
             )}
 
             {user && (
-              <div className="space-y-4">
+              <>
                 <Link href="/create-game" className="block">
                   <button className="w-full min-h-[48px] bg-gradient-to-r from-indigo-400 to-violet-500 text-white py-3 px-6 rounded-md hover:bg-violet-600 transition-colors">
                     Crear Partida
@@ -113,7 +113,7 @@ export default function Home() {
                     Partida en Curso
                   </button>
                 </Link>
-              </div>
+              </>
             )}
           </div>
           <div className="mt-16 text-center">

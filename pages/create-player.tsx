@@ -129,7 +129,7 @@ export default function CreatePlayer() {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white rounded-xl shadow-lg p-4 md:p-8">
+      <div className="bg-white rounded-xl shadow-lg p-4 pb-16 md:p-8">
         <div className="flex justify-start items-center mb-6">
           <BackButton />
           <h2 className="text-md mx-4">Creación de jugador</h2>
@@ -254,7 +254,7 @@ export default function CreatePlayer() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
           </div>
-          <div className="grid gap-4 max-w-sm mx-auto">
+          <div className="grid gap-4 max-w-sm mx-auto ">
               <button
                 type="submit"
                 disabled={loading}
