@@ -3,7 +3,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/router";
 import { supabase } from "../supabase/client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
 export default function Home() {
   const { user } = useAuth();
@@ -46,7 +45,9 @@ export default function Home() {
         </h1>
         {user && (
           <div className="mt-8 inline-flex items-center px-3 py-1 rounded-full bg-gray-100">
-            <span className="mr-2 text-xl">{user.user_metadata.emoji || "🎮"}</span>
+            <span className="mr-2 text-xl">
+              {user.user_metadata.emoji || "🎮"}
+            </span>
             <span className="text-gray-700">
               {user.user_metadata.name?.toLowerCase() || user.email}
             </span>
@@ -115,17 +116,16 @@ export default function Home() {
               </>
             )}
           </div>
-          {/* <div className="mt-16 text-center">
+          <div className="mt-16 text-center">
             <p className="text-sm text-gray-400">developed by</p>
-            <Image
+            <img
               src="/images/grape.png"
               alt="Company Logo"
               width={90}
               height={30}
               className="mx-auto"
-              priority={false}
             />
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
