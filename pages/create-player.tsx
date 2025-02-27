@@ -95,7 +95,7 @@ export default function CreatePlayer() {
       if (signInError) throw signInError;
 
       // 5. Redirigir al home
-      router.push("/home");
+      router.push("/");
     } catch (err) {
       console.error("Error:", err);
       if (err instanceof Error) {
